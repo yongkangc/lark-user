@@ -1,0 +1,38 @@
+[package]
+name = "lark-user"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.88"
+license = "MIT"
+description = "Local-first enterprise Lark user-session library and CLI with evidence-gated protocols"
+repository = "https://github.com/yongkangc/lark-user"
+
+[lib]
+name = "lark_user"
+
+[[bin]]
+name = "lark-user"
+path = "src/main.rs"
+
+[dependencies]
+base64 = "0.22"
+chacha20poly1305 = "0.10"
+chrono = { version = "0.4", features = ["serde"] }
+clap = { version = "4", features = ["derive", "env"] }
+directories = "6"
+fs2 = "0.4"
+hex = "0.4"
+keyring = "4.2"
+libc = "0.2"
+rusqlite = { version = "0.40", features = ["bundled"] }
+rustix = { version = "1", features = ["process"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+tempfile = "3"
+url = { version = "2", features = ["serde"] }
+zeroize = "1"
+
+[profile.release]
+lto = "thin"
+strip = true

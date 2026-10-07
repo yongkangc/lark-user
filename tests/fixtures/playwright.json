@@ -1,0 +1,4 @@
+[
+  {"name":"session","value":"SYNTHETIC_COOKIE_VALUE_A","domain":".tenant.example.test","path":"/","expires":4102444800.5,"httpOnly":true,"secure":true,"sameSite":"Lax","priority":"High"},
+  {"name":"partitioned_example","value":"SYNTHETIC_COOKIE_VALUE_B","domain":"api.example.test","path":"/messages","expires":-1,"httpOnly":true,"secure":true,"sameSite":"None","partitionKey":"https://tenant.example.test"}
+]
