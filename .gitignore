@@ -1,0 +1,11 @@
+/target/
+*.har
+*.sqlite*
+*.db*
+*.vault
+*.key
+*cookies*.json
+*storage-state*.json
+messages.jsonl
+.env*
+/private/
