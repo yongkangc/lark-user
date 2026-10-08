@@ -16,6 +16,47 @@ fn query(chat: Option<&str>, limit: usize) -> MessageQuery {
 }
 
 #[test]
+fn cursors_reject_changed_chat_limits_and_other_archives_with_the_same_scope() {
+    let directory = private_tempdir();
+    let mut first =
+        Archive::open_or_create(&directory.path().join("first.sqlite"), scope()).unwrap();
+    let mut second =
+        Archive::open_or_create(&directory.path().join("second.sqlite"), scope()).unwrap();
+    for archive in [&mut first, &mut second] {
+        archive
+            .import(
+                vec![message("a", "one", 0), message("b", "two", 1)],
+                None,
+                now(),
+            )
+            .unwrap();
+    }
+    let chats = first.chats(1, None).unwrap();
+    let cursor = chats.next_cursor.as_deref();
+    assert_eq!(first.chats(1, cursor).unwrap().items[0].chat_id, "two");
+    assert_eq!(
+        first.chats(2, cursor).unwrap_err().code,
+        ErrorCode::InvalidCursor
+    );
+    assert_eq!(
+        second.chats(1, cursor).unwrap_err().code,
+        ErrorCode::InvalidCursor
+    );
+    let mut next = query(None, 1);
+    next.cursor = first.messages(&next).unwrap().next_cursor;
+    assert_eq!(first.messages(&next).unwrap().items[0].message_id, "a");
+    assert_eq!(
+        second.messages(&next).unwrap_err().code,
+        ErrorCode::InvalidCursor
+    );
+    next.limit = 2;
+    assert_eq!(
+        first.messages(&next).unwrap_err().code,
+        ErrorCode::InvalidCursor
+    );
+}
+
+#[test]
 fn stable_pagination_handles_equal_times_and_cross_chat_message_ids() {
     let directory = private_tempdir();
     let mut archive =

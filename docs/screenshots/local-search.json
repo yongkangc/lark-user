@@ -1,0 +1,24 @@
+{
+  "command": "lark-user messages search \"generic report\" --local",
+  "selected_fields": {
+    "source": "local_archive",
+    "matches": [
+      {
+        "message_id": "synthetic-message-002",
+        "text": "Synthetic question: who will review the generic report?"
+      },
+      {
+        "message_id": "synthetic-message-001",
+        "text": "Synthetic commitment: deliver a generic report by 17:00."
+      }
+    ],
+    "completeness": {
+      "complete": false,
+      "reasons": [
+        "local_archive_only",
+        "international_server_not_verified",
+        "history_coverage_unknown"
+      ]
+    }
+  }
+}

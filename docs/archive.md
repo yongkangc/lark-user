@@ -34,7 +34,8 @@ rows. Reads do not silently delete data. This setting cannot override enterprise
 retention restrictions, whose exact semantics are not verified.
 
 Messages sort by `(sent time,message ID,chat ID)` descending. Keyset cursors bind
-scope, filters and limit; local edits/imports between pages are not a snapshot.
+the archive's canonical filesystem path, scope, filters and limit. Moving the
+archive invalidates existing cursors. Local edits/imports between pages are not a snapshot.
 Use bounded overlap/deduplication if reading a changing archive. Cursors are not
 credentials. All SQL values are parameters. FTS input is a literal phrase.
 
