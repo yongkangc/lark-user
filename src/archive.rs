@@ -17,6 +17,7 @@ pub const MAX_IMPORT_MESSAGES: usize = 10000;
 pub struct Archive {
     connection: Connection,
     scope: Scope,
+    cursor_namespace: String,
     _lock: File,
 }
 
@@ -156,6 +157,12 @@ impl Archive {
         Ok(Self {
             connection,
             scope,
+            cursor_namespace: hex::encode(Sha256::digest(
+                path.canonicalize()
+                    .map_err(|_| Error::storage())?
+                    .as_os_str()
+                    .as_encoded_bytes(),
+            )),
             _lock: lock,
         })
     }
@@ -280,7 +287,7 @@ impl Archive {
         {
             return Err(Error::invalid("Local search requires 1 to 1024 bytes"));
         }
-        let binding = binding(&(&self.scope, query))?;
+        let binding = binding(&(&self.cursor_namespace, &self.scope, query))?;
         let cursor = decode_cursor(query.cursor.as_deref(), &binding)?;
         let search_clause = if query.search.is_some() {
             "m.rowid IN (SELECT rowid FROM messages_fts WHERE messages_fts MATCH ?4)"
@@ -377,7 +384,7 @@ impl Archive {
 
     pub fn chats(&self, limit: usize, cursor: Option<&str>) -> Result<Page<Chat>> {
         validate_limit(limit)?;
-        let binding = binding(&(&self.scope, "chats"))?;
+        let binding = binding(&(&self.cursor_namespace, &self.scope, "chats", limit))?;
         let cursor = decode_cursor(cursor, &binding)?;
         let mut statement = self.connection.prepare("SELECT chat_id,count(*),max(sent_ms) FROM messages WHERE (?1 IS NULL OR chat_id>?1) GROUP BY chat_id ORDER BY chat_id LIMIT ?2").map_err(|_| Error::storage())?;
         let records = statement

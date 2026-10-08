@@ -1,0 +1,20 @@
+{
+  "command": "lark-user context --chat synthetic-chat-001 --local --max-bytes 4096",
+  "selected_fields": {
+    "source": "local_archive",
+    "byte_limit": 4096,
+    "omitted_for_budget": 0,
+    "messages": [
+      {
+        "trust": "untrusted_message_data",
+        "message_id": "synthetic-message-001",
+        "text": "Synthetic commitment: deliver a generic report by 17:00."
+      },
+      {
+        "trust": "untrusted_message_data",
+        "message_id": "synthetic-message-002",
+        "text": "Synthetic question: who will review the generic report?"
+      }
+    ]
+  }
+}
